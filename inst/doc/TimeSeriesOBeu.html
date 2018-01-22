@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Time series in OpenBudget.eu</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Time series in OpenBudget.eu</h1>
+
+
+
+<p><code>TimeSeries.OBeu</code> is used on <a href="http://openbudgets.eu/tools/">OpenBudgets.eu</a> data mininig tool platform with <a href="https://www.opencpu.org/">OpenCPU integration of R and JavaScript</a> to estimate and return the needed parameters for visualizations designed for OpenBudgets.eu <a href="http://openbudgets.eu/" class="uri">http://openbudgets.eu/</a> time series budget or expenditure data.</p>
+<p>The vignette shows the way <code>TimeSeries.OBeu</code> (in R and OpenCPU environment) is fitted with datasets of <a href="http://openbudgets.eu">OpenBudgets.eu</a> according to the <a href="https://github.com/openbudgets/data-model">OpenBudgets.eu data model</a>. Detailed documentation about OpenBudgets.eu data model can be found <a href="http://openbudgets.eu/assets/deliverables/D1.4.pdf">here</a></p>
+<p>The input and the resulted object are in json format.</p>
+<p>First you have to load the library</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load TimeSeries.OBeu</span>
+<span class="kw">library</span>(TimeSeries.OBeu)</code></pre></div>
+<div id="time-series-analysis-on-openbudgets.eu-platform" class="section level1">
+<h1>Time Series analysis on OpenBudgets.eu platform</h1>
+<p><code>open_spending.ts</code> is designed to estimate <em>autocorrelation and partial autocorrelation</em> of input time series data, <em>autocorrelation and partial autocorrelation</em> of the model residuals, <em>trend</em>, <em>seasonal</em> (if exists) and <em>remainder</em> components, model parameters such as arima order, arima coefficients etc. and the desired <em>forecasts</em> with their corresponding confidence intervals of <a href="http://openbudgets.eu/">OpenBudgets.eu</a> time series data.</p>
+<p>The input data must be a JSON link according to the <a href="https://github.com/openbudgets/data-model">OpenBudgets.eu data model</a>. The user should specify the amount and time variables, future steps to be predicted (default is 1 step forward) and the arima order (if not specified the most appropriate model will be selected according to AIC value).</p>
+<table>
+<caption><code>open_spending.ts</code> input</caption>
+<colgroup>
+<col width="22%"></col>
+<col width="77%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>json_data</p></td>
+<td><p>The json string, URL or file from Open Spending API</p></td>
+</tr>
+<tr class="even">
+<td><p>time</p></td>
+<td><p>the time label of the json time series data</p></td>
+</tr>
+<tr class="odd">
+<td><p>amount</p></td>
+<td><p>the amount label of the json time series data</p></td>
+</tr>
+<tr class="even">
+<td><p>order</p></td>
+<td><p>An integer vector of length 3 specifying the order of the Arima model</p></td>
+</tr>
+<tr class="odd">
+<td><p>prediction_steps</p></td>
+<td><p>The number of prediction steps</p></td>
+</tr>
+</tbody>
+</table>
+<div id="stationary-test" class="section level2">
+<h2>Stationary test</h2>
+<p>TimeSeries.OBeu includes function that automatically tests the deterministic and stochastic trend of the input time series data. This function uses ACF and PACF functions from forecast package, Phillips Perron test, Augmented Dickey Fuller (ADF) test, Kwiatkowski Phillips Schmidt Shin (KPSS) test, from tseries package and Mann Kendall test for Monotonic Trend Cox Stuart trend test from trend package.</p>
+</div>
+<div id="decomposition" class="section level2">
+<h2>Decomposition</h2>
+<p>Decomposition of seasonal time series data through arima models is based on stlm from forecast package and returns a list with useful parameters for OBEU. For non-seasonal time series that there is no seasonal component, local regression and likelihood models (locfit package) are used in order to extract the trend and remaider components.</p>
+</div>
+<div id="model-fitting" class="section level2">
+<h2>Model Fitting</h2>
+<p>Model fit of time series using arima models of seasonal time series data. The model with the lowest AIC value is selected for forecasts.</p>
+</div>
+<div id="forecast" class="section level2">
+<h2>Forecast</h2>
+<p>Forecasts the model that fits the input data using the auto.arima function(see forecast package). The model selection depends on the results of some diagnostic tests (acf,pacf,pp adf and kpss). For short time series the selected arima model is among various orders of the AR part using the first differences and the first order moving average component, with the lower AIC value.</p>
+</div>
+</div>
+<div id="output" class="section level1">
+<h1>Output</h1>
+<p>Here is a sort description of the outputs of each function:</p>
+<table>
+<caption><code>open_spending.ts</code> return</caption>
+<colgroup>
+<col width="25%"></col>
+<col width="23%"></col>
+<col width="51%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Output</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>acf.parameters</p></td>
+<td><ul>
+<li>acf</li>
+<li>acf.lag</li>
+<li>confidence.interval.up</li>
+<li>confidence.interval.low</li>
+</ul></td>
+<td><ul>
+<li>ACF values of the input time series</li>
+<li>Lags at which the acf is estimated</li>
+<li>Upper limit of the confidence interval</li>
+<li>Lower limit of the confidence interval</li>
+</ul></td>
+</tr>
+<tr class="even">
+<td><p>pacf.parameters</p></td>
+<td><ul>
+<li>pacf</li>
+<li>pacf.lag</li>
+<li>confidence.interval.up</li>
+<li>confidence.interval.low</li>
+</ul></td>
+<td><ul>
+<li>PACF values of the input time series</li>
+<li>Lags at which the pacf is estimated</li>
+<li>Upper limit of the confidence interval</li>
+<li>Lower limit of the confidence interval</li>
+</ul></td>
+</tr>
+<tr class="odd">
+<td><p>acf.residuals.parameters</p></td>
+<td><ul>
+<li>acf.res</li>
+<li>acf.res.lag</li>
+<li>confidence.interval.up</li>
+<li>confidence.interval.low</li>
+</ul></td>
+<td><ul>
+<li>ACF values of the model residuals</li>
+<li>Lags at which the acf is estimated of the model residuals</li>
+<li>Upper limit of the confidence interval</li>
+<li>Lower limit of the confidence interval</li>
+</ul></td>
+</tr>
+<tr class="even">
+<td><p>pacf.residuals.parameters</p></td>
+<td><ul>
+<li>pacf.res</li>
+<li>pacf.res.lag</li>
+<li>confidence.interval.up</li>
+<li>confidence.interval.low</li>
+</ul></td>
+<td><ul>
+<li>Pacf values of the model residuals</li>
+<li>Lags at which the pacf is estimated of the model residuals</li>
+<li>Upper limit of confidence interval</li>
+<li>Lower limit of confidence interval</li>
+</ul></td>
+</tr>
+<tr class="odd">
+<td><p>stl.plot</p></td>
+<td><ul>
+<li>trend</li>
+<li>trend.ci.up</li>
+<li>trend.ci.low</li>
+<li>seasonal</li>
+<li>remainder</li>
+<li>time</li>
+</ul></td>
+<td><ul>
+<li>Trend component</li>
+<li>Up limit for trend component</li>
+<li>Low limit for trend component</li>
+<li>Seasonal component</li>
+<li>Remainder component</li>
+<li>Time of the series was sampled</li>
+</ul></td>
+</tr>
+<tr class="even">
+<td><p>stl.general</p></td>
+<td><ul>
+<li>stl.degree</li>
+<li>degfr</li>
+<li>degfr.fitted</li>
+<li>fitted</li>
+</ul></td>
+<td><ul>
+<li>Degree of fit</li>
+<li>Effective degrees of freedom</li>
+<li>Fitted degrees of freedom</li>
+<li>Model’s fitted values</li>
+</ul></td>
+</tr>
+<tr class="odd">
+<td><p>residuals</p></td>
+<td><ul>
+<li>residuals</li>
+</ul></td>
+<td><ul>
+<li>Residuals of the model</li>
+</ul></td>
+</tr>
+<tr class="even">
+<td><p>compare</p></td>
+<td><ul>
+<li>arima.order</li>
+<li>arima.coef</li>
+<li>arima.coef.se</li>
+<li>covariance.coef</li>
+<li>resid.variance</li>
+<li>not.used.obs</li>
+<li>used.obs</li>
+<li>loglik</li>
+<li>aic</li>
+<li>bic</li>
+<li>gcv</li>
+<li>aicc</li>
+</ul></td>
+<td><ul>
+<li>Arima order</li>
+<li>AR, MA and regression coefficients</li>
+<li>Standard error of the coefficients</li>
+<li>Variance of the coefficients</li>
+<li>Residuals variance</li>
+<li>Number of not used observations</li>
+<li>Used observations</li>
+<li>Maximized log-likelihood,</li>
+<li>AIC value</li>
+<li>BIC value</li>
+<li>Generalized cross-validation statistic</li>
+<li>Second-order AIC</li>
+</ul></td>
+</tr>
+<tr class="odd">
+<td><p>forecasts</p></td>
+<td><ul>
+<li>ts.model</li>
+<li>data_year</li>
+<li>data</li>
+<li>predict_time</li>
+<li>predict_values</li>
+<li>up80</li>
+<li>low80</li>
+<li>up95</li>
+<li>low95</li>
+</ul></td>
+<td><ul>
+<li>A string indicating the arima orders</li>
+<li>Time of time series data</li>
+<li>Time series values</li>
+<li>Time of the predicted values</li>
+<li>Predicted values</li>
+<li>Upper 80% confidence limit</li>
+<li>Lower 80% confidence limit</li>
+<li>Upper 95% confidence limit</li>
+<li>Lower 95% confidence limit</li>
+</ul></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<p>The dataset that is being used is a sample json string from <a href="http://apps.openbudgets.eu/">OpenBudgets.eu platform</a>.</p>
+<div id="in-r-environment" class="section level2">
+<h2>In R environment</h2>
+<p><code>open_spending.ts</code> function’s input are data as json link and described with <a href="https://github.com/openbudgets/data-model">OpenBudgets.eu data model</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#example openbudgets.eu time series data</span>
+sample.ts.data =<span class="st"> </span>
+<span class="st">'{&quot;page&quot;:0,</span>
+<span class="st">&quot;page_size&quot;: 30,</span>
+<span class="st">&quot;total_cell_count&quot;: 15,</span>
+<span class="st">&quot;cell&quot;: [],</span>
+<span class="st">&quot;status&quot;: &quot;ok&quot;,</span>
+<span class="st">&quot;cells&quot;: [{</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2002&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 290501420.64,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 9210928544.2325,</span>
+<span class="st">        &quot;_count&quot;: 4805</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2003&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 311242291.07,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 9832143974.9013,</span>
+<span class="st">        &quot;_count&quot;: 4988</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2004&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 5268500701.1,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 170688885714.24,</span>
+<span class="st">        &quot;_count&quot;: 10055</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2005&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 2542887761.01,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 77204615312.025,</span>
+<span class="st">        &quot;_count&quot;: 2032</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2006&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 14803951786.68,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 429758720367.32,</span>
+<span class="st">        &quot;_count&quot;: 13632</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2007&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 16188514346.44,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 445588857385.76,</span>
+<span class="st">        &quot;_count&quot;: 22798</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2008&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 18231035815.89,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 480643028250.12,</span>
+<span class="st">        &quot;_count&quot;: 24176</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2009&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 19079541164.68,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 511808691742.54,</span>
+<span class="st">        &quot;_count&quot;: 26250</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2010&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 22738650575.01,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 597685430364.14,</span>
+<span class="st">        &quot;_count&quot;: 87667</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2011&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 24961375670.57,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 626230992823.26,</span>
+<span class="st">        &quot;_count&quot;: 134352</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2012&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 261513607691.41,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 7030666436872.5,</span>
+<span class="st">        &quot;_count&quot;: 147556</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2013&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 268946402299.09,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 7226220232913.8,</span>
+<span class="st">        &quot;_count&quot;: 150079</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2014&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 255222816704.9,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 6907598086283.4,</span>
+<span class="st">        &quot;_count&quot;: 176019</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2015&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 22976062973.62,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 636276111928.46,</span>
+<span class="st">        &quot;_count&quot;: 213777</span>
+<span class="st">    },</span>
+<span class="st">    {</span>
+<span class="st">        &quot;global__fiscalPeriod__28951.notation&quot;: &quot;2016&quot;,</span>
+<span class="st">        &quot;global__amount__0397f.sum&quot;: 12051686541.16,</span>
+<span class="st">        &quot;global__amount__0397f__CZK.sum&quot;: 325672725401.77,</span>
+<span class="st">        &quot;_count&quot;: 161797</span>
+<span class="st">    }</span>
+<span class="st">],</span>
+<span class="st">&quot;order&quot;: [</span>
+<span class="st">    [&quot;global__fiscalPeriod__28951.fiscalPeriod&quot;, &quot;asc&quot;]</span>
+<span class="st">],</span>
+<span class="st">&quot;aggregates&quot;: [&quot;&quot;, &quot;_count&quot;],</span>
+<span class="st">&quot;summary&quot;: {</span>
+<span class="st">    &quot;global__amount__0397f.sum&quot;: 945126777743.27,</span>
+<span class="st">    &quot;global__amount__0397f__CZK.sum&quot;: 25485085887878</span>
+<span class="st">},</span>
+<span class="st">&quot;attributes&quot;: [&quot;&quot;]</span>
+<span class="st">}'</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result =<span class="st"> </span><span class="kw">open_spending.ts</span>(
+  <span class="dt">json_data =</span>  sample.ts.data, 
+  <span class="dt">time =</span><span class="st">&quot;global__fiscalPeriod__28951.notation&quot;</span>,
+  <span class="dt">amount =</span> <span class="st">&quot;global__amount__0397f.sum&quot;</span>
+  )
+<span class="co"># Pretty output using prettify of jsonlite library</span>
+jsonlite<span class="op">::</span><span class="kw">prettify</span>(result,<span class="dt">indent =</span> <span class="dv">2</span>)</code></pre></div>
+<pre><code>## {
+##   &quot;acf.param&quot;: {
+##     &quot;acf.parameters&quot;: {
+##       &quot;acf&quot;: [
+##         1,
+##         0.6083,
+##         0.1674,
+##         -0.1663,
+##         -0.1295,
+##         -0.0727,
+##         -0.0925,
+##         -0.1301,
+##         -0.1615,
+##         -0.1959,
+##         -0.2115,
+##         -0.1311
+##       ],
+##       &quot;acf.lag&quot;: [
+##         0,
+##         1,
+##         2,
+##         3,
+##         4,
+##         5,
+##         6,
+##         7,
+##         8,
+##         9,
+##         10,
+##         11
+##       ],
+##       &quot;confidence.interval.up&quot;: [
+##         0.5061
+##       ],
+##       &quot;confidence.interval.low&quot;: [
+##         -0.5061
+##       ]
+##     },
+##     &quot;pacf.parameters&quot;: {
+##       &quot;pacf&quot;: [
+##         0.6083,
+##         -0.3215,
+##         -0.1865,
+##         0.25,
+##         -0.1593,
+##         -0.1764,
+##         0.0869,
+##         -0.1346,
+##         -0.2117,
+##         -0.0036,
+##         0.0508
+##       ],
+##       &quot;pacf.lag&quot;: [
+##         1,
+##         2,
+##         3,
+##         4,
+##         5,
+##         6,
+##         7,
+##         8,
+##         9,
+##         10,
+##         11
+##       ],
+##       &quot;confidence.interval.up&quot;: [
+##         0.5061
+##       ],
+##       &quot;confidence.interval.low&quot;: [
+##         -0.5061
+##       ]
+##     },
+##     &quot;acf.residuals.parameters&quot;: {
+##       &quot;acf.residuals&quot;: [
+##         1,
+##         0.3097,
+##         0.2296,
+##         -0.2346,
+##         -0.0115,
+##         -0.069,
+##         -0.0524,
+##         -0.0981,
+##         -0.0842,
+##         -0.1215,
+##         -0.0934,
+##         -0.0868,
+##         -0.0484,
+##         -0.2128,
+##         -0.115,
+##         -0.1051,
+##         0.2946
+##       ],
+##       &quot;acf.residuals.lag&quot;: [
+##         0,
+##         1,
+##         2,
+##         3,
+##         4,
+##         5,
+##         6,
+##         7,
+##         8,
+##         9,
+##         10,
+##         11,
+##         12,
+##         13,
+##         14,
+##         15,
+##         16
+##       ],
+##       &quot;confidence.interval.up&quot;: [
+##         0.5061
+##       ],
+##       &quot;confidence.interval.low&quot;: [
+##         -0.5061
+##       ]
+##     },
+##     &quot;pacf.residuals.parameters&quot;: {
+##       &quot;pacf.residuals&quot;: [
+##         0.3097,
+##         0.1479,
+##         -0.3857,
+##         0.1673,
+##         0.0455,
+##         -0.2432,
+##         0.0379,
+##         0.0137,
+##         -0.2159,
+##         0.0048,
+##         0.0175,
+##         -0.1445,
+##         -0.2757,
+##         0.0882,
+##         -0.0175,
+##         0.2238
+##       ],
+##       &quot;pacf.residuals.lag&quot;: [
+##         1,
+##         2,
+##         3,
+##         4,
+##         5,
+##         6,
+##         7,
+##         8,
+##         9,
+##         10,
+##         11,
+##         12,
+##         13,
+##         14,
+##         15,
+##         16
+##       ],
+##       &quot;confidence.interval.up&quot;: [
+##         0.5061
+##       ],
+##       &quot;confidence.interval.low&quot;: [
+##         -0.5061
+##       ]
+##     }
+##   },
+##   &quot;decomposition&quot;: {
+##     &quot;stl.plot&quot;: {
+##       &quot;trend&quot;: [
+##         -823419544.0324,
+##         1661560665.8427,
+##         4624784832.814,
+##         7878983908.9168,
+##         9164365783.7901,
+##         1249040775.5615,
+##         -4351015667.1447,
+##         6551641382.3009,
+##         57664029716.7199,
+##         135646130025.509,
+##         199114831580.159,
+##         212547970271.575,
+##         183231679544.124,
+##         110152904455.055,
+##         -12061960507.0845
+##       ],
+##       &quot;conf.interval.up&quot;: [
+##         100039247757.031,
+##         66576136730.7478,
+##         60840745924.5652,
+##         68328241466.4622,
+##         72409579664.1255,
+##         65432105294.9799,
+##         59676059485.8763,
+##         70171989437.0366,
+##         121691104869.741,
+##         199829194544.927,
+##         262360045460.495,
+##         272997227829.121,
+##         239447640635.875,
+##         175067480519.96,
+##         88800706793.9786
+##       ],
+##       &quot;conf.interval.low&quot;: [
+##         -101686086845.095,
+##         -63253015399.0623,
+##         -51591176258.9372,
+##         -52570273648.6285,
+##         -54080848096.5454,
+##         -62934023743.857,
+##         -68378090820.1657,
+##         -57068706672.4349,
+##         -6363045436.3011,
+##         71463065506.0904,
+##         135869617699.824,
+##         152098712714.03,
+##         127015718452.373,
+##         45238328390.1502,
+##         -112924627808.148
+##       ],
+##       &quot;seasonal&quot;: {
+## 
+##       },
+##       &quot;remainder&quot;: [
+##         1113920964.6724,
+##         -1350318374.7727,
+##         643715868.286,
+##         -5336096147.9068,
+##         5639586002.8899,
+##         14939473570.8785,
+##         22582051483.0347,
+##         12527899782.3791,
+##         -34925379141.7099,
+##         -110684754354.939,
+##         62398776111.2508,
+##         56398432027.5148,
+##         71991137160.7759,
+##         -87176841481.4353,
+##         24113647048.2445
+##       ],
+##       &quot;time&quot;: [
+##         2002,
+##         2003,
+##         2004,
+##         2005,
+##         2006,
+##         2007,
+##         2008,
+##         2009,
+##         2010,
+##         2011,
+##         2012,
+##         2013,
+##         2014,
+##         2015,
+##         2016
+##       ]
+##     },
+##     &quot;stl.general&quot;: {
+##       &quot;degfr&quot;: [
+##         5.288
+##       ],
+##       &quot;degfr.fitted&quot;: [
+##         4.9747
+##       ],
+##       &quot;stl.degree&quot;: [
+##         2
+##       ]
+##     },
+##     &quot;residuals_fitted&quot;: {
+##       &quot;residuals&quot;: [
+##         1113920964.6724,
+##         -1350318374.7727,
+##         643715868.286,
+##         -5336096147.9068,
+##         5639586002.8899,
+##         14939473570.8785,
+##         22582051483.0347,
+##         12527899782.3791,
+##         -34925379141.7099,
+##         -110684754354.939,
+##         62398776111.2508,
+##         56398432027.5148,
+##         71991137160.7759,
+##         -87176841481.4353,
+##         24113647048.2445
+##       ],
+##       &quot;fitted&quot;: [
+##         -823419544.0324,
+##         1661560665.8427,
+##         4624784832.814,
+##         7878983908.9168,
+##         9164365783.7901,
+##         1249040775.5615,
+##         -4351015667.1447,
+##         6551641382.3009,
+##         57664029716.7199,
+##         135646130025.509,
+##         199114831580.159,
+##         212547970271.575,
+##         183231679544.124,
+##         110152904455.055,
+##         -12061960507.0845
+##       ],
+##       &quot;time&quot;: [
+##         2002,
+##         2003,
+##         2004,
+##         2005,
+##         2006,
+##         2007,
+##         2008,
+##         2009,
+##         2010,
+##         2011,
+##         2012,
+##         2013,
+##         2014,
+##         2015,
+##         2016
+##       ],
+##       &quot;line&quot;: [
+##         0
+##       ]
+##     },
+##     &quot;compare&quot;: {
+##       &quot;resid.variance&quot;: [
+##         2.4902231028103e+021
+##       ],
+##       &quot;used.obs&quot;: [
+##         2002,
+##         2016,
+##         2009,
+##         2005.5,
+##         2012.5
+##       ],
+##       &quot;loglik&quot;: [
+##         -1.74315617196721e+022
+##       ],
+##       &quot;aic&quot;: [
+##         3.48631234393441e+022
+##       ],
+##       &quot;bic&quot;: [
+##         3.48631234393441e+022
+##       ],
+##       &quot;gcv&quot;: [
+##         5.54416871365202e+021
+##       ]
+##     }
+##   },
+##   &quot;model.param&quot;: {
+##     &quot;model&quot;: {
+##       &quot;arima.order&quot;: [
+##         2,
+##         1,
+##         0,
+##         0,
+##         1,
+##         1,
+##         0
+##       ],
+##       &quot;arima.coef&quot;: [
+##         0.8348,
+##         -0.249,
+##         -0.9999
+##       ],
+##       &quot;arima.coef.se&quot;: [
+##         0.2524,
+##         0.2482,
+##         0.5954
+##       ]
+##     },
+##     &quot;residuals_fitted&quot;: {
+##       &quot;residuals&quot;: [
+##         290501.235,
+##         18348492.233,
+##         4388547106.9232,
+##         -2696772619.0425,
+##         12279728464.2613,
+##         1663580423.4101,
+##         5162045969.9383,
+##         4109968753.4051,
+##         6995758560.2579,
+##         5772141482.9292,
+##         231395399804.073,
+##         31316280480.3554,
+##         66705685366.0788,
+##         -149540618863.384,
+##         33819215962.2688
+##       ],
+##       &quot;fitted&quot;: [
+##         290210919.405,
+##         292893798.837,
+##         879953594.1768,
+##         5239660380.0525,
+##         2524223322.4187,
+##         14524933923.0299,
+##         13068989845.9517,
+##         14969572411.2749,
+##         15742892014.7521,
+##         19189234187.6408,
+##         30118207887.337,
+##         237630121818.735,
+##         188517131338.821,
+##         172516681837.004,
+##         -21767529421.1088
+##       ],
+##       &quot;time&quot;: [
+##         2002,
+##         2003,
+##         2004,
+##         2005,
+##         2006,
+##         2007,
+##         2008,
+##         2009,
+##         2010,
+##         2011,
+##         2012,
+##         2013,
+##         2014,
+##         2015,
+##         2016
+##       ],
+##       &quot;line&quot;: [
+##         0
+##       ]
+##     },
+##     &quot;compare&quot;: {
+##       &quot;resid.variance&quot;: [
+##         7.52601939136356e+021
+##       ],
+##       &quot;variance.coef&quot;: [
+##         [
+##           0.0637,
+##           -0.034,
+##           -0.0003
+##         ],
+##         [
+##           -0.034,
+##           0.0616,
+##           -0.0002
+##         ],
+##         [
+##           -0.0003,
+##           -0.0002,
+##           0.3545
+##         ]
+##       ],
+##       &quot;not.used.obs&quot;: [
+##         0
+##       ],
+##       &quot;used.obs&quot;: [
+##         14
+##       ],
+##       &quot;loglik&quot;: [
+##         -371.6686
+##       ],
+##       &quot;aic&quot;: [
+##         751.3372
+##       ],
+##       &quot;bic&quot;: [
+##         753.8934
+##       ],
+##       &quot;aicc&quot;: [
+##         755.7816
+##       ]
+##     }
+##   },
+##   &quot;forecasts&quot;: {
+##     &quot;ts.model&quot;: [
+##       &quot;ARIMA(2,1,1)&quot;
+##     ],
+##     &quot;data_year&quot;: [
+##       2002,
+##       2003,
+##       2004,
+##       2005,
+##       2006,
+##       2007,
+##       2008,
+##       2009,
+##       2010,
+##       2011,
+##       2012,
+##       2013,
+##       2014,
+##       2015,
+##       2016
+##     ],
+##     &quot;data&quot;: [
+##       290501420.64,
+##       311242291.07,
+##       5268500701.1,
+##       2542887761.01,
+##       14803951786.68,
+##       16188514346.44,
+##       18231035815.89,
+##       19079541164.68,
+##       22738650575.01,
+##       24961375670.57,
+##       261513607691.41,
+##       268946402299.09,
+##       255222816704.9,
+##       22976062973.62,
+##       12051686541.16
+##     ],
+##     &quot;predict_time&quot;: [
+##       2017
+##     ],
+##     &quot;predict_values&quot;: [
+##       27966099866.1595
+##     ],
+##     &quot;up80&quot;: [
+##       142431304484.384
+##     ],
+##     &quot;low80&quot;: [
+##       -86499104752.0649
+##     ],
+##     &quot;up95&quot;: [
+##       203025523588.521
+##     ],
+##     &quot;low95&quot;: [
+##       -147093323856.202
+##     ]
+##   }
+## }
+## </code></pre>
+</div>
+<div id="in-opencpu-environment" class="section level2">
+<h2>In OpenCPU environment</h2>
+<div id="select-library-and-function" class="section level3">
+<h3>Select library and function</h3>
+<ol style="list-style-type: decimal">
+<li><p>Go to: yourserver/ocpu/test</p></li>
+<li><p>Copy and paste the following function to the endpoint</p></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">..<span class="op">/</span>library<span class="op">/</span>TimeSeries.OBeu<span class="op">/</span>R<span class="op">/</span>open_spending.ts
+<span class="co"># library/ {name of the library} /R/ {function}</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li><strong>Select Method</strong>: <strong><code>Post</code></strong></li>
+</ol>
+</div>
+<div id="add-parameters" class="section level3">
+<h3>Add parameters</h3>
+<p>Click <strong>add parameters</strong> every time you want to add a new parameters and values.</p>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Define the input data:</p>
+<ul>
+<li><strong>Param Name</strong>: <strong><code>json_data</code></strong></li>
+<li><strong>Param Value</strong> (<em>URL</em> of json data or json string): <strong><code>&quot;http://next.openspending.org/api/3/cubes/21260d070eb5d63a121ea4c400dafbbb:apbn_fungsi_2016/facts?pagesize=20&quot;</code></strong> (or any other json URL with the data)</li>
+</ul></li>
+<li><p>Define the <em>time</em> parameter:</p>
+<ul>
+<li><strong>Param Name</strong>: <strong><code>time</code></strong></li>
+<li><strong>Param Value</strong>: <strong><code>&quot;global__fiscalPeriod__28951.notation&quot;</code></strong></li>
+</ul></li>
+<li><p>Define the <em>amount</em> parameter:</p>
+<ul>
+<li><strong>Param Name</strong>: <strong><code>amount</code></strong></li>
+<li><strong>Param Value</strong>: <strong><code>&quot;global__amount__0397f.sum&quot;</code></strong></li>
+</ul></li>
+</ol>
+<p>You add likewise <em>x.order</em> parameter to fit a specific arima order, see TimeSeries.OBeu <em>reference manual</em> for further details.</p>
+<ol start="7" style="list-style-type: decimal">
+<li>Ready! Click on <strong>Ajax request</strong>!</li>
+</ol>
+</div>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<ol start="8" style="list-style-type: decimal">
+<li><p>copy the <strong>/ocpu/tmp/{this_id_number}/R/.val</strong> (second on the right panel)</p></li>
+<li><p>finally, paste <strong><code>yourserver/ocpu/tmp/{this_id_number}/R/.val</code></strong> on a new tab.</p></li>
+</ol>
+</div>
+</div>
+<div id="further-details" class="section level1">
+<h1>Further Details</h1>
+<ul>
+<li><a href="https://www.opencpu.org/api.html">HTTP in OpenCPU</a></li>
+<li><a href="https://www.opencpu.org/help.html">OpenCPU Help</a></li>
+<li><a href="https://www.opencpu.org/jslib.html">OpenCPU JavaScript Client</a></li>
+<li><a href="https://cran.r-project.org/package=opencpu">OpenCPU on CRAN</a></li>
+</ul>
+</div>
+<div id="github" class="section level1">
+<h1>Github</h1>
+<ul>
+<li><a href="https://github.com/opencpu/opencpu">OpenCPU package <em>development version</em></a></li>
+<li><a href="https://github.com/okgreece/TimeSeries.OBeu">TimeSeries.OBeu package <em>development version</em></a></li>
+</ul>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
