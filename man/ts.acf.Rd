@@ -4,7 +4,7 @@
 \alias{ts.acf}
 \title{Extract the ACF and PACF parameters of time series and their model residuals}
 \usage{
-ts.acf(tsdata, model_residuals, a=0.95, tojson=F)
+ts.acf(tsdata, model_residuals, a = 0.95, tojson = FALSE)
 }
 \arguments{
 \item{tsdata}{The input univariate time series data}
@@ -53,7 +53,7 @@ ts.acf(Athens_draft_ts)
 
 }
 \seealso{
-\code{\link{ts.analysis}}, \code{\link[forecast]{Acf}}, \code{\link[forecast]{Pacf}}
+\code{\link{ts.analysis}}, \code{\link{Acf}}, \code{\link{Pacf}}
 }
 \author{
 Kleanthis Koupidis

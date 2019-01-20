@@ -1,25 +1,26 @@
 Package: TimeSeries.OBeu
 Type: Package
-Title: Time Series Analysis 'OpenBudgets'
-Version: 1.2.2
-Date: 2018-01-20
-Description: Estimate and return the needed parameters for visualisations designed for 'OpenBudgets' <http://openbudgets.eu/> time series data. Calculate time series model and forecast parameters in Budget time series data of municipalities across Europe, according to the 'OpenBudgets' data model. There are functions for measuring deterministic and stochastic trend of the input time series data, decomposing with local regression models or seasonal trend decomposition, modelling the appropriate auto regressive integrated moving average model and provide forecasts for the input 'OpenBudgets' time series fiscal data. Also, can be used generally to extract visualisation parameters convert them to 'JSON' format and use them as input in a different graphical interface.
+Title: Time Series Analysis 'OpenBudgets.eu'
+Version: 1.2.3
+Date: 2019-01-20
+Description: Estimate and return the needed parameters for visualizations designed for 'OpenBudgets.eu' <http://openbudgets.eu/> time series data. Calculate time series model and forecast parameters in budget time series data of municipalities across Europe, according to the 'OpenBudgets.eu' data model. There are functions for measuring deterministic and stochastic trend of the input time series data with 'ACF', 'PACF', 'Phillips Perron' test, 'Augmented Dickey Fuller (ADF)' test, 'Kwiatkowski-Phillips-Schmidt-Shin (KPSS)' test, 'Mann Kendall' test for monotonic trend and 'Cox and Stuart' trend test, decomposing with local regression models or 'stl' decomposition, fitting the appropriate 'arima' model and provide forecasts for the input 'OpenBudgets.eu' time series fiscal data. Also, can be used generally to extract visualization parameters convert them to 'JSON' format and use them as input in a different graphical interface.
 Authors@R: c(
-    person("Kleanthis", "Koupidis", email = "koupidis@okfn.gr", role = c("aut", "cre")),
-    person("Charalampos", "Bratsas",  email = "charalampos.bratsas@okfn.org", role = "aut")
+    person("Kleanthis", "Koupidis", , "koupidis@okfn.gr", role = c("aut", "cre")),
+    person("Charalampos", "Bratsas", , "charalampos.bratsas@okfn.org", role = "aut")
     )
 Maintainer: Kleanthis Koupidis <koupidis@okfn.gr>
 URL: https://github.com/okgreece/TimeSeries.OBeu
 BugReports: https://github.com/okgreece/TimeSeries.OBeu/issues
 License: GPL-2 | file LICENSE
 LazyData: TRUE
-Imports: forecast, locfit, jsonlite, stats, trend, tseries
-RoxygenNote: 6.0.1
+Encoding: UTF-8
+Imports: devtools, forecast, locfit, jsonlite, stats, trend, tseries
+RoxygenNote: 6.1.0
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-01-19 22:44:35 UTC; Kleanthis-Okf
+Packaged: 2019-01-20 21:02:30 UTC; akis
 Author: Kleanthis Koupidis [aut, cre],
   Charalampos Bratsas [aut]
 Repository: CRAN
-Date/Publication: 2018-01-22 09:41:59 UTC
+Date/Publication: 2019-01-20 21:40:03 UTC
